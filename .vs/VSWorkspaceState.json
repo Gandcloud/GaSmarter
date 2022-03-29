@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\test",
+    "\\src\\test\\java",
+    "\\src\\test\\java\\ru",
+    "\\src\\test\\java\\ru\\smartdec",
+    "\\src\\test\\java\\ru\\smartdec\\smartcheck",
+    "\\src\\test\\resources",
+    "\\src\\test\\resources\\rules",
+    "\\tests_not_used_now"
+  ],
+  "SelectedNode": "\\src\\test\\resources\\rules\\SOLIDITY_BYTE_ARRAY_INSTEAD_BYTES.sol",
+  "PreviewInSolutionExplorer": false
+}

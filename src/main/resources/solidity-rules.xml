@@ -1,0 +1,1651 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Rules xmlns="http://www.smartdec.ru/SmartCheck/Conditions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.smartdec.ru/SmartCheck/Conditions rules-grammar-schema.xsd ">
+    <!-- 1.Looks for construction: "byte[]". -->
+    <Rule>
+        <RuleId>1SOLIDITY_BYTE_ARRAY_INSTEAD_BYTES</RuleId>
+        <Patterns>
+            <!-- Looks for construction: "byte[]". -->
+            <Pattern patternId="1sbaib">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>3</Severity>
+                <XPath>
+                    //typeName
+                        [typeName/elementaryTypeName[text()[1] = "byte"]]
+                        [matches(text()[1], "^\[.*\]$")]
+                </XPath>
+            </Pattern>
+        </Patterns>
+    </Rule>
+    <!-- 2.Looks for definition variable.  -->
+    <Rule>
+        <RuleId>2SOLIDITY_NO_DEFINITION_VARIABLE</RuleId>
+        <Patterns>
+            <!-- Looks for definition variable and =false.  -->
+            <Pattern patternId="2sndv1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //contractDefinition/contractPartDefinition/stateVariableDeclaration
+                        /expression/primaryExpression/numberLiteral/decimalNumber[text()[1]="0"]
+                </XPath>
+            </Pattern>
+            <!-- Looks for definition variable and =false.  -->
+            <Pattern patternId="2sndv2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //contractDefinition/contractPartDefinition/stateVariableDeclaration
+                        /expression/primaryExpression/numberLiteral/hexNumber[text()[1]="0X0"]
+                </XPath>
+            </Pattern>
+            <!-- Looks for definition variable and =false.  -->
+            <Pattern patternId="2sndv3">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //contractDefinition/contractPartDefinition/stateVariableDeclaration
+                        /expression/primaryExpression/booleanLiteral[text()[1]="false"]
+                </XPath>
+            </Pattern>
+        </Patterns>
+    </Rule>
+    <!-- 3.Looks for bytes32.  -->
+    <Rule>
+        <RuleId>3SOLIDITY_USED_BYTES32</RuleId>
+        <Patterns>
+            <!-- Looks for bytes.  -->
+            <Pattern patternId="3suby1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>3</Severity>
+                <XPath>
+                    //contractDefinition/contractPartDefinition/stateVariableDeclaration
+                        /typeName/elementaryTypeName[text()[1]="bytes"]
+                </XPath>
+            </Pattern>
+            <!-- Looks for string.  -->
+            <Pattern patternId="3suby1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>3</Severity>
+                <XPath>
+                    //contractDefinition/contractPartDefinition/stateVariableDeclaration
+                        /typeName/elementaryTypeName[text()[1]="string"]
+                </XPath>
+            </Pattern>
+        </Patterns>
+    </Rule>
+    <!-- 3.Looks for reason string in require statement. -->
+    <Rule>
+        <RuleId>3SOLIDITY_USE_SHORT_REASON_STRING</RuleId>
+        <Patterns>
+            <!-- Looks for reason string in require statement. -->
+            <Pattern patternId="3susrs">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>1</Severity>
+                <XPath>
+                    //statement//functionCall
+                    [functionName/identifier[text()[1]="require"]]
+                    [callArguments//expression[last()]//stringLiteral[string-length()&gt;32]]
+                </XPath>
+            </Pattern>
+        </Patterns>
+    </Rule>
+    <!-- 4.Looks for redundancy check.  -->
+    <Rule>
+        <RuleId>4SOLIDITY_REDUNDANCY_CHECK_OF_SAFEMATH_LIBRARY</RuleId>
+        <Patterns>
+            <!-- Looks for sub and >、>=、<、<= in if. -->
+            <Pattern patternId="4srcs1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //ifStatement
+                    [condition/expression[matches(text()[1], "&gt;|&lt;|&gt;=|&lt;=")]]
+                    [statement//functionCall/functionName/identifier[text()[1]="sub"]]
+                </XPath>
+            </Pattern>
+            <!-- Looks for div and >、< in if. -->
+            <Pattern patternId="4srcs2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //ifStatement
+                        [condition/expression[matches(text()[1], "&gt;|&lt;")]]
+                        [statement//functionCall/functionName/identifier[text()[1]="div"]]
+                </XPath>
+            </Pattern>
+            <!-- Looks for mul and == in if. -->
+            <Pattern patternId="4srcs3">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //ifStatement
+                    [condition/expression/comparison[matches(text()[1], "==")]]
+                    [statement//functionCall/functionName/identifier[text()[1]="mul"]]
+                </XPath>
+            </Pattern>
+            <!-- Looks for mod and != in if. -->
+            <Pattern patternId="4srcs4">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //ifStatement
+                    [condition/expression/comparison[matches(text()[1], "!=")]]
+                    [statement//functionCall/functionName/identifier[text()[1]="mod"]]
+                </XPath>
+            </Pattern>
+            <!-- Looks for sub and >、>=、<、<= in require. -->
+            <Pattern patternId="4srcs5">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //functionDefinition/block/statement//functionCall
+                        [functionName/identifier[text()[1]="require"]]
+                        [callArguments//expression[matches(text()[1], "&gt;|&lt;|&gt;=|&lt;=")]]
+                        [ancestor::functionDefinition/block/statement//functionName/identifier[text()[1]="sub"]]
+                </XPath>
+            </Pattern>
+            <!-- Looks for div and >、< in require. -->
+            <Pattern patternId="4srcs6">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //functionDefinition/block/statement//functionCall
+                        [functionName/identifier[text()[1]="require"]]
+                        [callArguments//expression[matches(text()[1], "&gt;|&lt;")]]
+                        [ancestor::functionDefinition/block/statement//functionName/identifier[text()[1]="div"]]
+                </XPath>
+            </Pattern>
+            <!-- Looks for mul and == in require. -->
+            <Pattern patternId="4srcs7">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //functionDefinition/block/statement//functionCall
+                        [functionName/identifier[text()[1]="require"]]
+                        [callArguments//expression/comparison[matches(text()[1], "==")]]
+                        [ancestor::functionDefinition/block/statement//functionName/identifier[text()[1]="mul"]]
+                </XPath>
+            </Pattern>
+            <!-- Looks for mod and != in requiree. -->
+            <Pattern patternId="4srcs8">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //functionDefinition/block/statement//functionCall
+                        [functionName/identifier[text()[1]="require"]]
+                        [callArguments//expression/comparison[matches(text()[1], "!=")]]
+                        [ancestor::functionDefinition/block/statement//functionName/identifier[text()[1]="mod"]]
+                </XPath>
+            </Pattern>
+        </Patterns>
+    </Rule>
+    <!-- 5.Looks for adjacent require. -->
+    <Rule>
+        <RuleId>5SOLIDITY_USE_NESTED_JUDGMENT</RuleId>
+        <Patterns>
+            <!-- Looks for adjacent require. -->
+            <Pattern patternId="5sunj1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>3</Severity>
+                <XPath>
+                    //statement//functionCall
+                    [
+                        functionName/identifier[text()[1]="require"]
+                        and functionName/identifier/text()[1]
+                            =ancestor::functionDefinition/block/statement[2]//functionCall/functionName/identifier/text()[1]
+                    ]
+                </XPath>
+            </Pattern>
+        </Patterns>
+    </Rule>
+    <!-- 6.Looks for dead code. -->
+    <Rule>
+        <RuleId>6SOLIDITY_DEAD_CODE</RuleId>
+        <Patterns>
+            <!-- Looks for no used code. -->
+            <Pattern patternId="6sdec1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //statement/ifStatement
+                        [condition/expression[matches(text()[1], "&gt;|&gt;=")]]
+                        [statement//ifStatement/condition/expression[matches(text()[1], "&lt;|&lt;=")]]
+                </XPath>
+            </Pattern>
+            <!-- Looks for no used code. -->
+            <Pattern patternId="6sdec2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //statement/ifStatement
+                        [condition/expression[matches(text()[1], "&lt;|&lt;=")]]
+                        [statement//ifStatement/condition/expression[matches(text()[1], "&gt;|&gt;=")]]
+                </XPath>
+            </Pattern>
+        </Patterns>
+    </Rule>
+    <!-- 7.Looks for unclear code. -->
+    <Rule>
+        <RuleId>7SOLIDITY_UNCLEAR_PRODUCT</RuleId>
+        <Patterns>
+            <!-- Looks for only used code. -->
+            <Pattern patternId="7sunp1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //statement/ifStatement
+                        [condition/expression[matches(text()[1], "&gt;|&gt;=")]]
+                        [statement//ifStatement/condition/expression[matches(text()[1], "&gt;|&gt;=")]]
+                </XPath>
+            </Pattern>
+            <!-- Looks for only used code. -->
+            <Pattern patternId="7sunp2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //statement/ifStatement
+                        [condition/expression[matches(text()[1], "&lt;|&lt;=")]]
+                        [statement//ifStatement/condition/expression[matches(text()[1], "&lt;|&lt;=")]]
+                </XPath>
+            </Pattern>
+        </Patterns>
+    </Rule>
+    <!-- 8.Looks for two for loop have same condition. -->
+    <Rule>
+        <RuleId>8SOLIDITY_LOOP_FUSION</RuleId>
+        <Patterns>
+            <!-- Looks for two for loop have same condition in for loop. -->
+            <Pattern patternId="8slof1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>1</Severity>
+                <XPath>
+                   //functionDefinition/block/statement
+                    [   
+                        forStatement/condition/expression/expression[2]
+                        =preceding-sibling::statement/forStatement/condition/expression/expression[2]
+                    ]
+                </XPath>
+            </Pattern>
+
+            <!-- Looks for two for loop have same condition in while loop. -->
+            <Pattern patternId="8slof2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>1</Severity>
+                <XPath>
+                   //functionDefinition/block/statement
+                    [   whileStatement/condition/expression/expression[2]
+                        =preceding-sibling::statement/whileStatement/condition/expression
+                        [
+                        not (expression[1]/primaryExpression/identifier[matches(text()[1], "^temp$")])
+                        ]/expression[2]
+                        
+                    ]
+                </XPath>
+            </Pattern>
+        </Patterns>
+    </Rule>
+    <!-- 9.Looks for same compute in loop. -->
+    <Rule>
+        <RuleId>9SOLIDITY_SAME_COMPUTE_IN_LOOP</RuleId>
+        <Patterns>
+            <!-- for.-->
+            <!-- Looks for same compute in loop a+b+c. -->
+            <Pattern patternId="9sc1l1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/plusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/plusOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a+b-c. -->
+            <Pattern patternId="9sc1l2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/minusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/plusOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a+b*c. -->
+            <Pattern patternId="9sc1l3">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/plusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                                [
+                                    descendant::expression//muldivOperator/mulOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop (a+b)*c. -->
+            <Pattern patternId="9sc1l4">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/mulOperator
+                                    or functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/plusOperator
+                                    or descendant::expression//functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a+b/c. -->
+            <Pattern patternId="9sc1l5">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/plusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                                [
+                                    descendant::expression//muldivOperator/divOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop (a+b)/c. -->
+            <Pattern patternId="9sc1l6">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/divOperator
+                                    or functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/plusOperator
+                                    or descendant::expression//functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a+b%c. -->
+            <Pattern patternId="9sc1l7">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/plusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                                [
+                                    descendant::expression//muldivOperator/divRemOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "mod"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop (a+b)%c. -->
+            <Pattern patternId="9sc1l8">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/divRemOperator
+                                    or functionCall/functionName/identifier[text()[1] = "mod"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/plusOperator
+                                    or descendant::expression//functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+
+            <!-- Looks for same compute in loop a-b+c. -->
+            <Pattern patternId="9sc2l1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/plusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/minusOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a-b-c. -->
+            <Pattern patternId="9sc2l2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/minusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/minusOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a-b*c. -->
+            <Pattern patternId="9sc2l3">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/minusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                                [
+                                    descendant::expression//muldivOperator/mulOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop (a-b)*c. -->
+            <Pattern patternId="9sc2l4">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/mulOperator
+                                    or functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/minusOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a-b/c. -->
+            <Pattern patternId="9sc2l5">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/minusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                                [
+                                    descendant::expression//muldivOperator/divOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop (a-b)/c. -->
+            <Pattern patternId="9sc2l6">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/divOperator
+                                    or functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/minusOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a-b%c. -->
+            <Pattern patternId="9sc2l7">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/minusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                                [
+                                    descendant::expression//muldivOperator/divRemOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "mod"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop (a-b)%c. -->
+            <Pattern patternId="9sc2l8">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/divRemOperator
+                                    or functionCall/functionName/identifier[text()[1] = "mod"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/minusOperator
+                                    or descendant::expression//functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+
+            <!-- Looks for same compute in loop a*b*c. -->
+            <Pattern patternId="9sc3l1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/mulOperator
+                                    or functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                                [
+                                    descendant::expression//mulOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a*b/c. -->
+            <Pattern patternId="9sc3l2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/divOperator
+                                    or functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                                [
+                                    descendant::expression//mulOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            
+            <!-- Looks for same compute in loop a/b/c. -->
+            <Pattern patternId="9sc4l1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/divOperator
+                                    or functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                                [
+                                    descendant::expression//divOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a/b*c. -->
+            <Pattern patternId="9sc4l2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/divOperator
+                                    or functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                                [
+                                    descendant::expression//mulOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+
+            <!-- while-->
+            <!-- Looks for same compute in loop a+b+c. -->
+            <Pattern patternId="9sc5l1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/plusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/plusOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a+b-c. -->
+            <Pattern patternId="9sc5l2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/minusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/plusOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a+b*c. -->
+            <Pattern patternId="9sc5l3">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/plusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                                [
+                                    descendant::expression//muldivOperator/mulOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop (a+b)*c. -->
+            <Pattern patternId="9sc5l4">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                            [
+                                muldivOperator/mulOperator
+                                or functionCall/functionName/identifier[text()[1] = "mul"]
+                            ]
+                            [
+                                descendant::expression//plusminusOperator/plusOperator
+                                or descendant::expression//functionCall/functionName/identifier[text()[1] = "add"]
+                            ]
+                    ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a+b/c. -->
+            <Pattern patternId="9sc5l5">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/plusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                                [
+                                    descendant::expression/muldivOperator/divOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop (a+b)/c. -->
+            <Pattern patternId="9sc5l6">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/divOperator
+                                    or functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/plusOperator
+                                    or descendant::expression//functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a+b%c. -->
+            <Pattern patternId="9sc5l7">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/plusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                                [
+                                    descendant::expression//muldivOperator/divRemOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "mod"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a+b%c. -->
+            <Pattern patternId="9sc5l8">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/divRemOperator
+                                    or functionCall/functionName/identifier[text()[1] = "mod"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/plusOperator
+                                    or descendant::expression//functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+
+            <!-- Looks for same compute in loop a-b+c. -->
+            <Pattern patternId="9sc6l1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/plusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "add"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/minusOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a-b-c. -->
+            <Pattern patternId="9sc6l2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/minusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/minusOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a-b*c. -->
+            <Pattern patternId="9sc6l3">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/minusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                                [
+                                    descendant::expression//muldivOperator/mulOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop (a-b)*c. -->
+            <Pattern patternId="9sc6l4">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/mulOperator
+                                    or functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/minusOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a-b/c. -->
+            <Pattern patternId="9sc6l5">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/minusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                                [
+                                    descendant::expression//muldivOperator/divOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop (a-b)/c. -->
+            <Pattern patternId="9sc6l6">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/divOperator
+                                    or functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/minusOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a-b%c. -->
+            <Pattern patternId="9sc6l7">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    plusminusOperator/minusOperator
+                                    or functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                                [
+                                    descendant::expression//muldivOperator/divRemOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "mod"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop (a-b)%c. -->
+            <Pattern patternId="9sc6l8">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/divRemOperator
+                                    or functionCall/functionName/identifier[text()[1] = "mod"]
+                                ]
+                                [
+                                    descendant::expression//plusminusOperator/minusOperator
+                                    or descendant::expression//functionCall/functionName/identifier[text()[1] = "sub"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+
+            <!-- Looks for same compute in loop a*b*c. -->
+            <Pattern patternId="9sc7l1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/mulOperator
+                                    or functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                                [
+                                    descendant::expression//mulOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a*b/c. -->
+            <Pattern patternId="9sc7l2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/mulOperator
+                                    or functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                                [
+                                    descendant::expression//divOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            
+            <!-- Looks for same compute in loop a/b/c. -->
+            <Pattern patternId="9sc8l1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/divOperator
+                                    or functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                                [
+                                    descendant::expression//divOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a/b*c. -->
+            <Pattern patternId="9sc8l2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        [
+                            not (condition/expression/expression[1]/primaryExpression/identifier
+                            = statement//expression/expression[1]/primaryExpression/identifier)
+                        ]
+                        [
+                            statement//expression
+                                [
+                                    muldivOperator/divOperator
+                                    or functionCall/functionName/identifier[text()[1] = "div"]
+                                ]
+                                [
+                                    descendant::expression//mulOperator
+                                    or descendant::expression/functionCall/functionName/identifier[text()[1] = "mul"]
+                                ]
+                        ]
+                </XPath>
+            </Pattern>
+
+            <!-- same compute in condition-->
+            <!-- Looks for same compute in loop a+b. -->
+            <Pattern patternId="9sc9l1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        /condition//expression
+                            [
+                                plusminusOperator/plusOperator
+                                or functionCall/functionName/identifier[text()[1] = "add"]
+                            ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a-b. -->
+            <Pattern patternId="9sc9l2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        /condition//expression
+                            [
+                                plusminusOperator/minusOperator
+                                or functionCall/functionName/identifier[text()[1] = "sub"]
+                            ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a*b. -->
+            <Pattern patternId="9sc9l3">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        /condition//expression
+                            [
+                                muldivOperator/mulOperator
+                                or functionCall/functionName/identifier[text()[1] = "mul"]
+                            ]      
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a/b. -->
+            <Pattern patternId="9sc9l4">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement
+                        /condition//expression
+                            [
+                                muldivOperator/divOperator
+                                or functionCall/functionName/identifier[text()[1] = "div"]
+                            ]
+                </XPath>
+            </Pattern>
+            <Pattern patternId="9sc9l5">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        /condition//expression
+                            [
+                                plusminusOperator/plusOperator
+                                or functionCall/functionName/identifier[text()[1] = "add"]
+                            ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a-b. -->
+            <Pattern patternId="9sc9l6">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        /condition//expression
+                            [
+                                plusminusOperator/minusOperator
+                                or functionCall/functionName/identifier[text()[1] = "sub"]
+                            ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a*b. -->
+            <Pattern patternId="9sc9l7">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        /condition//expression
+                            [
+                                muldivOperator/mulOperator
+                                or functionCall/functionName/identifier[text()[1] = "mul"]
+                            ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for same compute in loop a/b. -->
+            <Pattern patternId="9sc9l8">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //whileStatement
+                        /condition//expression
+                            [
+                                muldivOperator/divOperator
+                                or functionCall/functionName/identifier[text()[1] = "div"]
+                            ]
+                </XPath>
+            </Pattern>
+            
+        </Patterns>
+    </Rule>
+    <!-- 10.Looks for "for" loop, which accesses contract's state variables. -->
+    <Rule>
+        <RuleId>10SOLIDITY_EXTRA_GAS_IN_LOOPS</RuleId>
+        <Patterns>
+            <!-- A. -->
+            <!-- Looks for "(forStatement | whileStatement | doWhileStatement)" loop, which accesses contract's state variables. -->
+            <Pattern patternId="10seA1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>1</Severity>
+                <XPath>
+                    //(forStatement | whileStatement | doWhileStatement)
+                        [
+                            (condition | expression[2])/expression/expression[not(matches(text()[1], "^\.balance$|^\.length$"))]//identifier
+                                = ancestor::contractDefinition//stateVariableDeclaration[not(constantType)]/identifier
+                        ]
+                </XPath>
+            </Pattern>
+            <!-- Looks for construction: "for (...; i >= 0; ...) { ... }", "while(i >= 0) {}", "do {} while(i >= 0)", where variable i is of type uint*. -->
+            <Pattern patternId="10seA2">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>1</Severity>
+                <XPath>
+                    //(forStatement | whileStatement | doWhileStatement)
+                        /condition/expression
+                            [expression[1]/primaryExpression/identifier
+                                [text()[1]
+                                    = ancestor::contractDefinition//(structDefinition/variableDeclaration | stateVariableDeclaration)
+                                        [typeName/elementaryTypeName[matches(text()[1], "uint")]]
+                                        /identifier/text()[1]
+                                ]
+                            ]
+                </XPath>
+            </Pattern>
+
+            <!-- B. -->
+            <!-- Looks for "(forStatement | whileStatement | doWhileStatement)" loop, which statement accesses contract's state variables. -->
+            <Pattern patternId="10seB3">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>1</Severity>
+                <XPath>
+                    //(forStatement | whileStatement | doWhileStatement)
+                        /statement//expression
+                            [expression[1]/primaryExpression
+                                [identifier
+                                    = ancestor::contractDefinition/contractPartDefinition
+                                    /(structDefinition/variableDeclaration | stateVariableDeclaration)
+                                        [typeName/elementaryTypeName[text()[1]= "uint"]]
+                                        /identifier
+                                ] 
+                            ]
+                </XPath>
+            </Pattern>
+
+            <!-- C. -->
+            <!-- Looks for "for" loop, which accesses ".balance" in condition. -->
+            <Pattern patternId="10fbC4">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>1</Severity>
+                <XPath>
+                    //forStatement[(condition | expression[2])//expression[matches(text()[1], "^\.balance$")]]
+                </XPath>
+            </Pattern>
+			<!-- Looks for "while" loop, which condition accesses ".balance". -->
+			<Pattern patternId="10wbC5">
+				<Categories>
+					<Category>Solidity</Category>
+				</Categories>
+				<Severity>1</Severity>
+				<XPath>
+					//whileStatement[condition//expression[matches(text()[1], "^\.balance$")]]
+				</XPath>
+			</Pattern>
+			
+			<!-- Looks for "for" loop, which accesses ".length" in condition. -->
+			<Pattern patternId="10flC8">
+				<Categories>
+					<Category>Solidity</Category>
+				</Categories>
+				<Severity>1</Severity>
+				<XPath>
+					//forStatement[(condition | expression[2])//expression[matches(text()[1], "^\.length$")]]
+				</XPath>
+			</Pattern>
+			<!-- Looks for "while" loop, which condition accesses ".length". -->
+			<Pattern patternId="10wlC9">
+				<Categories>
+					<Category>Solidity</Category>
+				</Categories>
+				<Severity>1</Severity>
+				<XPath>
+					//whileStatement[condition//expression[matches(text()[1], "^\.length")]]
+				</XPath>
+			</Pattern>
+
+            <!-- D. -->
+            <!-- Looks for "for" loop, which accesses ".balance" in statement. -->
+            <Pattern patternId="10fbDc">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>1</Severity>
+                <XPath>
+                    //forStatement/statement//expression[matches(text()[1], "^\.balance$")]
+                </XPath>
+            </Pattern>
+			<!-- Looks for "while" loop, which statement accesses ".balance". -->
+			<Pattern patternId="10wbDd">
+				<Categories>
+					<Category>Solidity</Category>
+				</Categories>
+				<Severity>1</Severity>
+				<XPath>
+					//whileStatement/statement[matches(text()[1], "^\.balance$")]
+				</XPath>
+			</Pattern>
+            <!-- Looks for "for" loop, which accesses ".length" in statement. -->
+            <Pattern patternId="10flDe">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>1</Severity>
+                <XPath>
+                    //forStatement/statement//expression[matches(text()[1], "^\.length$")]
+                </XPath>
+            </Pattern>
+			<!-- Looks for "while" loop, which statement accesses ".length". -->
+			<Pattern patternId="10wlDf">
+				<Categories>
+					<Category>Solidity</Category>
+				</Categories>
+				<Severity>1</Severity>
+				<XPath>
+					//whileStatement/statement[matches(text()[1], "^\.length$")]
+				</XPath>
+			</Pattern>
+            
+            
+
+            
+            <!-- Looks for cycles with <addr>.transfer() inside. -->
+            <!--
+            <Pattern patternId="10seg9">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //statement
+                        [forStatement or whileStatement or doWhileStatement]
+                        [descendant::functionCall
+                            [functionName/identifier[text()[1] = "transfer"]]
+                            [callArguments/tupleExpression[count(expression) = 1]]
+                        ]
+                </XPath>
+            </Pattern>
+            -->
+        </Patterns>
+    </Rule>
+    <!-- 11.Looks for if in for loop. -->
+    <Rule>
+        <RuleId>11SOLIDITY_COMPARE_WITH_UNILATERAL_CIRCULATION</RuleId>
+        <Patterns>
+            <!-- Looks for if in for loop. -->
+            <Pattern patternId="11scu1">
+                <Categories>
+                    <Category>Solidity</Category>
+                </Categories>
+                <Severity>2</Severity>
+                <XPath>
+                    //forStatement/statement//ifStatement/condition/expression
+                        [matches(text()[1],"&lt;|&lt;=|&gt;|&gt;=")]
+                </XPath>
+            </Pattern>
+        </Patterns>
+    </Rule>
+</Rules>

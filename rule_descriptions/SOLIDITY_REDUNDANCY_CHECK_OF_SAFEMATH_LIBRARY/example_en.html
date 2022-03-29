@@ -1,0 +1,31 @@
+<p>In the following contract, this is an example of definitioned variable:
+</p>
+<pre>
+<code>
+    pragma solidity 0.4.24;
+
+    
+    import "./safemath.sol";
+
+    contract A {
+        require(balance >= amount);
+        balance = balance.sub(amount);
+      }
+      
+</code>
+</pre>
+<p>
+    Better Alternative:
+</p>
+<pre>
+    <code>
+        pragma solidity 0.4.24;
+    
+        import "./safemath.sol";
+
+        contract A {
+            balance = balance.sub(amount);
+          }
+          
+    </code>
+    </pre>

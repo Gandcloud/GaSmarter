@@ -1,0 +1,38 @@
+<p>In the following contract, this is an example of definitioned variable:
+</p>
+<pre>
+<code>
+    pragma solidity 0.4.24;
+
+    contract A {
+        function deadcode(uint x) public returns(uint){
+            uint m;
+            uint n;
+            for(uint i=0;i<x;i++)
+                m+=i;
+            for(uint j=0;j<x;j++)
+                n+=j;
+        }
+    }
+</code>
+</pre>
+<p>
+    Better Alternative:
+</p>
+<pre>
+    <code>
+        pragma solidity 0.4.24;
+    
+        contract A {
+            function deadcode(uint x) public returns(uint){
+                uint m;
+                uint n;
+                for(uint i=0;i<x;i++){
+                    m+=i;
+                    n+=i;
+                }
+            }
+        }
+        
+    </code>
+    </pre>

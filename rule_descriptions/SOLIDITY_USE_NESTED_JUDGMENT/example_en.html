@@ -1,0 +1,29 @@
+<p>In the following contract, this is an example of definitioned variable:
+</p>
+<pre>
+<code>
+    pragma solidity 0.4.24;
+
+    contract A {
+        require(a>5);
+        require(b==0);
+        return a;
+      }
+      
+</code>
+</pre>
+<p>
+    Better Alternative:
+</p>
+<pre>
+    <code>
+        pragma solidity 0.4.24;
+    
+        contract A {
+            require(a>5 && b==0){
+                return a;
+            }   
+          }
+          
+    </code>
+    </pre>
